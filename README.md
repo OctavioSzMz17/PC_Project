@@ -34,7 +34,7 @@ pip install Pillow
 Si eres miembro del equipo o el profesor, descarga el código con este comando:
 
 git clone https://github.com/OctavioSzMz17/PC_Project.git
-cd NOMBRE_DEL_REPO
+cd PC_Project
 
 
 
