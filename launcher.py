@@ -6,6 +6,20 @@ import sys
 # Importamos lo necesario del menú principal
 from mainMenu import BotonModerno, obtener_ruta_base, ProyectoFinalUI
 
+# --- FUNCIÓN CRÍTICA PARA PYINSTALLER ---
+def ruta_recursos(ruta_relativa):
+    """ 
+    Obtiene la ruta absoluta al recurso.
+    Si es exe (sys._MEIPASS), busca ahí.
+    Si es script normal, busca en la ruta relativa local.
+    """
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    
+    return os.path.join(base_path, ruta_relativa)
+
 class LoginApp:
     def __init__(self, root):
         self.root = root
@@ -16,18 +30,28 @@ class LoginApp:
         self.root.geometry(f"{self.ancho_ventana}x{self.alto_ventana}")
         self.root.resizable(False, False)
 
-        # 1. Preparar la imagen de fondo CON el panel semitransparente
-        ruta_base = obtener_ruta_base()
-        # Ajusta si tu imagen tiene otro nombre
-        ruta_imagen = os.path.join(ruta_base, "src", "images", "p.png") 
+        # 1. Preparar la imagen de fondo
+        # --- CAMBIO IMPORTANTE AQUÍ ---
+        # En lugar de buscar en src/images/..., buscamos directamente el nombre del archivo
+        # porque le diremos a PyInstaller que lo ponga "suelto" en la raíz del exe.
+        # Si tu imagen está en src/images/p.png en tu disco, la pasaremos como parametro luego.
         
+        ruta_imagen = ruta_recursos("p.png") 
+        
+        # Validación extra por si la imagen no se encuentra
+        if not os.path.exists(ruta_imagen):
+            print(f"ADVERTENCIA: No se encontró la imagen en: {ruta_imagen}")
+            # Intentar buscarla en la ruta original por si corremos sin compilar y sin moverla
+            ruta_original = os.path.join(os.getcwd(), "src", "images", "p.png")
+            if os.path.exists(ruta_original):
+                ruta_imagen = ruta_original
+
         self.bg_photo = self.crear_fondo_con_panel(ruta_imagen)
         
         bg_label = tk.Label(self.root, image=self.bg_photo)
         bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
         # --- 2. Colocar los Entradas (Entry) y el Botón ---
-        # Ajustamos 'rely' (posición vertical relativa) para que caigan dentro del nuevo cuadro
         
         # Entrada Usuario
         self.entry_user = tk.Entry(self.root, font=("Segoe UI", 12), justify="center", bg="#dfe6e9", bd=0)
@@ -59,29 +83,19 @@ class LoginApp:
             draw = ImageDraw.Draw(overlay)
             
             # C. DIBUJAR EL RECUADRO (Calculado para 1000x800)
-            # Centro X = 500
-            # Queremos un cuadro de unos 400px de ancho x 500px de alto
-            # X: 500 - 220 = 280  |  500 + 220 = 720
-            # Y: Empezar en 150   |  Terminar en 650
             draw.rectangle([(280, 150), (720, 650)], fill=(20, 25, 30, 210), outline=None)
             
-            # D. Fuentes (Hice la letra del título un poco más grande)
+            # D. Fuentes
             try:
-                font_title = ImageFont.truetype("arial.ttf", 32) # Título más grande
-                font_label = ImageFont.truetype("arial.ttf", 16) # Etiquetas
+                font_title = ImageFont.truetype("arial.ttf", 32) 
+                font_label = ImageFont.truetype("arial.ttf", 16) 
             except:
                 font_title = ImageFont.load_default()
                 font_label = ImageFont.load_default()
 
-            # E. Textos (Centrados en X = 500)
-            # Título
+            # E. Textos
             draw.text((500, 180), "INICIAR SESIÓN", font=font_title, fill="#FFFFFF", anchor="mt")
-            
-            # Etiquetas (Calculadas para estar arriba de los Entries)
-            # Entry User está en rely 0.40 (~320px) -> Ponemos texto en 290
             draw.text((500, 290), "Usuario", font=font_label, fill="white", anchor="mb")
-            
-            # Entry Pass está en rely 0.52 (~416px) -> Ponemos texto en 386
             draw.text((500, 386), "Contraseña", font=font_label, fill="white", anchor="mb")
 
             # F. Fusionar
@@ -89,7 +103,8 @@ class LoginApp:
             return ImageTk.PhotoImage(final_img)
 
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error cargando imagen: {e}")
+            # Fondo de emergencia gris oscuro si falla la imagen
             bg = Image.new("RGB", (self.ancho_ventana, self.alto_ventana), "#2d3436")
             return ImageTk.PhotoImage(bg)
 
@@ -106,7 +121,6 @@ class LoginApp:
         self.root.destroy() 
         nueva_root = tk.Tk()
         
-        # Centrar el menú principal también
         w_menu, h_menu = 900, 700
         x = nueva_root.winfo_screenwidth() // 2 - w_menu // 2
         y = nueva_root.winfo_screenheight() // 2 - h_menu // 2
@@ -117,7 +131,6 @@ class LoginApp:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    # Centrar la ventana de login (1000x800) en tu pantalla
     w, h = 1000, 800
     x = root.winfo_screenwidth() // 2 - w // 2
     y = root.winfo_screenheight() // 2 - h // 2
