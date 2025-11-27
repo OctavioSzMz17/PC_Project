@@ -23,58 +23,47 @@ Para que el proyecto funcione en tu computadora (si vas a editar el código), ne
 Instala la librería ejecutando este comando en tu terminal:
 ```bash
 pip install Pillow
+```
 
--------------------------------------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------------------------------
+---
 
-
-📥 Cómo Descargar (Clone)
+## 📥 Cómo Descargar (Clone)
 Si eres miembro del equipo o el profesor, descarga el código con este comando:
 
+```bash
 git clone https://github.com/OctavioSzMz17/PC_Project.git
 cd PC_Project
+```
 
 
+---
 
 
--------------------------------------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-▶️ Cómo Ejecutar
+## ▶️ Cómo Ejecutar
 El punto de entrada de la aplicación es el archivo launcher.py (el Login).
 
 Abre la terminal en la carpeta del proyecto.
 
 Ejecuta:
 
-Bash
-
+```Bash
 python launcher.py
+```
+
 Ingresa las credenciales por defecto:
 
 Usuario: tigres
 
 Contraseña: 1234
 
-
-
--------------------------------------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------------------------------
+---
 
 
 
-
-🛠 Manual de Integración (Para el Equipo)
+## 🛠 Manual de Integración (Para el Equipo)
 Si necesitas agregar una nueva práctica (Sockets, Hilos, etc.) al menú, sigue estrictamente estos pasos para no romper el sistema.
 
-Paso 1: Dónde guardar tus archivos
+Paso 2: Dónde guardar tus archivos
 Todo el código fuente vive dentro de la carpeta src/Python. Nunca dejes archivos sueltos fuera de las categorías.
 
 Entra a src/Python/{Categoría} (ej. Hilos, Sockets).
@@ -94,43 +83,39 @@ Python
 CASO B: Programa Dual (Cliente/Servidor) Usa un diccionario para indicar la carpeta y los nombres de los scripts. El sistema abrirá dos consolas automáticamente.
 
 Python
+```bash
+    "Nombre del Botón": {
+        "tipo": "dual",
+        "carpeta": "Categoria/Nombre_De_Tu_Carpeta",
+        "server": "servidor.py",
+        "client": "cliente.py"
+    },
+```
 
-"Nombre del Botón": {
-    "tipo": "dual",
-    "carpeta": "Categoria/Nombre_De_Tu_Carpeta",
-    "server": "servidor.py",
-    "client": "cliente.py"
-},
 ⚠️ REGLA DE ORO: Evitar cierre de ventana
 Para que el profesor pueda ver los resultados en la consola negra antes de que se cierre automáticamente al terminar el proceso, agrega siempre esta línea al final de tus scripts (tanto en cliente como en servidor):
 
 Python
 
+```bash
 input("\n--- Ejecución finalizada. Presiona ENTER para cerrar ---")
+```
+---
 
 
 
+## 👥 Autores
+1. [Hernández Alarcón Kimberly Anette]
 
--------------------------------------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------------------------------
+2. [Carpio Callejas Diana Ximena]
 
+3. [Hernández Cruz Julio Hazel]
 
+4. [Jiménez Ángeles Victor Jesús]
 
+5. [Calderón López Mario Daniel]
 
-👥 Autores
-Hernández Alarcón Kimberly Anette
-
-Carpio Callejas Diana Ximena
-
-Hernández Cruz Julio Hazel
-
-Jiménez Ángeles Victor Jesús
-
-Calderón López Mario Daniel
-
-Sanchez Mendoza Octavio
+6. [Sanchez Mendoza Octavio]
 
 
 
