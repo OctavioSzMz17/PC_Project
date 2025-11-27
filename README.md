@@ -63,7 +63,7 @@ Contraseña: 1234
 ## 🛠 Manual de Integración (Para el Equipo)
 Si necesitas agregar una nueva práctica (Sockets, Hilos, etc.) al menú, sigue estrictamente estos pasos para no romper el sistema.
 
-Paso 2: Dónde guardar tus archivos
+Paso 1: Dónde guardar tus archivos
 Todo el código fuente vive dentro de la carpeta src/Python. Nunca dejes archivos sueltos fuera de las categorías.
 
 Entra a src/Python/{Categoría} (ej. Hilos, Sockets).
