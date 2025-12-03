@@ -3,22 +3,22 @@ from tkinter import messagebox, font
 from PIL import Image, ImageTk, ImageDraw, ImageFont
 import os
 import sys
+
 # Importamos lo necesario del menú principal
+# Nota: Si usas PyInstaller con --onefile, asegúrate de que mainMenu también esté incluido.
 from mainMenu import BotonModerno, obtener_ruta_base, ProyectoFinalUI
 
 class LoginApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Acceso - Programación Concurrente")
-        # --- NUEVAS DIMENSIONES ---
         self.ancho_ventana = 1000
         self.alto_ventana = 800
         self.root.geometry(f"{self.ancho_ventana}x{self.alto_ventana}")
         self.root.resizable(False, False)
 
-        # 1. Preparar la imagen de fondo CON el panel semitransparente
+        # 1. Preparar la imagen de fondo
         ruta_base = obtener_ruta_base()
-        # Ajusta si tu imagen tiene otro nombre
         ruta_imagen = os.path.join(ruta_base, "src", "images", "p.png") 
         
         self.bg_photo = self.crear_fondo_con_panel(ruta_imagen)
@@ -26,18 +26,14 @@ class LoginApp:
         bg_label = tk.Label(self.root, image=self.bg_photo)
         bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-        # --- 2. Colocar los Entradas (Entry) y el Botón ---
-        # Ajustamos 'rely' (posición vertical relativa) para que caigan dentro del nuevo cuadro
-        
-        # Entrada Usuario
+        # --- 2. Entradas ---
         self.entry_user = tk.Entry(self.root, font=("Segoe UI", 12), justify="center", bg="#dfe6e9", bd=0)
         self.entry_user.place(relx=0.5, rely=0.40, width=280, height=35, anchor="center")
 
-        # Entrada Contraseña
         self.entry_pass = tk.Entry(self.root, font=("Segoe UI", 12), justify="center", bg="#dfe6e9", bd=0, show="*")
         self.entry_pass.place(relx=0.5, rely=0.52, width=280, height=35, anchor="center")
 
-        # --- 3. Botón Ingresar ---
+        # --- 3. Botón ---
         c_azul = "#005DAB"
         c_azul_c = "#003366"
         c_amarillo = "#FDB913"
@@ -45,51 +41,35 @@ class LoginApp:
         self.btn_login = BotonModerno(self.root, "INGRESAR", self.validar_login, 
                                       c_azul, c_azul_c, c_amarillo, 
                                       width=280, height=50, corner_radius=25, bg_color="#15191d") 
-        # Posición vertical del botón (rely)
         self.btn_login.place(relx=0.5, rely=0.65, anchor="center")
 
     def crear_fondo_con_panel(self, image_path):
         try:
-            # A. Cargar y redimensionar al NUEVO tamaño (1000x800)
             base_img = Image.open(image_path).convert("RGBA")
             base_img = base_img.resize((self.ancho_ventana, self.alto_ventana), Image.LANCZOS)
             
-            # B. Capa transparente
             overlay = Image.new("RGBA", base_img.size, (0, 0, 0, 0))
             draw = ImageDraw.Draw(overlay)
             
-            # C. DIBUJAR EL RECUADRO (Calculado para 1000x800)
-            # Centro X = 500
-            # Queremos un cuadro de unos 400px de ancho x 500px de alto
-            # X: 500 - 220 = 280  |  500 + 220 = 720
-            # Y: Empezar en 150   |  Terminar en 650
+            # Recuadro central
             draw.rectangle([(280, 150), (720, 650)], fill=(20, 25, 30, 210), outline=None)
             
-            # D. Fuentes (Hice la letra del título un poco más grande)
             try:
-                font_title = ImageFont.truetype("arial.ttf", 32) # Título más grande
-                font_label = ImageFont.truetype("arial.ttf", 16) # Etiquetas
+                font_title = ImageFont.truetype("arial.ttf", 32)
+                font_label = ImageFont.truetype("arial.ttf", 16)
             except:
                 font_title = ImageFont.load_default()
                 font_label = ImageFont.load_default()
 
-            # E. Textos (Centrados en X = 500)
-            # Título
             draw.text((500, 180), "INICIAR SESIÓN", font=font_title, fill="#FFFFFF", anchor="mt")
-            
-            # Etiquetas (Calculadas para estar arriba de los Entries)
-            # Entry User está en rely 0.40 (~320px) -> Ponemos texto en 290
             draw.text((500, 290), "Usuario", font=font_label, fill="white", anchor="mb")
-            
-            # Entry Pass está en rely 0.52 (~416px) -> Ponemos texto en 386
             draw.text((500, 386), "Contraseña", font=font_label, fill="white", anchor="mb")
 
-            # F. Fusionar
             final_img = Image.alpha_composite(base_img, overlay)
             return ImageTk.PhotoImage(final_img)
 
         except Exception as e:
-            print(f"Error: {e}")
+            # Si no hay imagen, fondo gris
             bg = Image.new("RGB", (self.ancho_ventana, self.alto_ventana), "#2d3436")
             return ImageTk.PhotoImage(bg)
 
@@ -106,7 +86,6 @@ class LoginApp:
         self.root.destroy() 
         nueva_root = tk.Tk()
         
-        # Centrar el menú principal también
         w_menu, h_menu = 900, 700
         x = nueva_root.winfo_screenwidth() // 2 - w_menu // 2
         y = nueva_root.winfo_screenheight() // 2 - h_menu // 2
@@ -117,7 +96,6 @@ class LoginApp:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    # Centrar la ventana de login (1000x800) en tu pantalla
     w, h = 1000, 800
     x = root.winfo_screenwidth() // 2 - w // 2
     y = root.winfo_screenheight() // 2 - h // 2
