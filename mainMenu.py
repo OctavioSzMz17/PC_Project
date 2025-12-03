@@ -5,14 +5,12 @@ import os
 import sys
 from PIL import Image, ImageTk, ImageDraw
 
-# Importamos el executer corregido
+# Importamos el executer
 from executer import Executer 
 
 def obtener_ruta_base():
     """
-    Devuelve la ruta base donde se está ejecutando el programa.
-    - Si es EXE: Devuelve la carpeta donde está el .exe
-    - Si es Script: Devuelve la carpeta donde está este archivo .py
+    Devuelve la ruta raíz del proyecto.
     """
     if getattr(sys, 'frozen', False):
         return os.path.dirname(sys.executable)
@@ -20,7 +18,7 @@ def obtener_ruta_base():
         return os.path.dirname(os.path.abspath(__file__))
 
 # =============================================================================
-# CLASE VISUAL: BOTÓN MODERNO (Sin cambios en lógica, solo limpieza)
+# COMPONENTE: BOTÓN MODERNO
 # =============================================================================
 class BotonModerno(tk.Canvas):
     def __init__(self, parent, text, command, fill_color_inicio, fill_color_fin, 
@@ -52,7 +50,7 @@ class BotonModerno(tk.Canvas):
         w, h, r = self.width, self.height, self.corner_radius
         bw, off = 3, 2
         
-        # Degradado y forma
+        # Degradado
         self.create_arc(off, off, r*2, h-off, start=90, extent=180, fill=self.fill_color_inicio, outline="")
         self.create_arc(w-r*2, off, w-off, h-off, start=270, extent=180, fill=self.fill_color_fin, outline="")
 
@@ -78,6 +76,7 @@ class BotonModerno(tk.Canvas):
     def on_enter(self, event):
         self.config(cursor="hand2")
         w, h, r, off = self.width, self.height, self.corner_radius, 2
+        # Efecto brillo
         self.create_rectangle(r, off, w-r, h-off, fill="#ffffff", stipple="gray25", outline="", tags="highlight")
 
     def on_leave(self, event):
@@ -87,7 +86,7 @@ class BotonModerno(tk.Canvas):
         if self.command: self.command()
 
 # =============================================================================
-# APP PRINCIPAL
+# CLASE PRINCIPAL UI
 # =============================================================================
 class ProyectoFinalUI:
     def __init__(self, root):
@@ -96,7 +95,7 @@ class ProyectoFinalUI:
         self.root.geometry("900x700")
         self.root.resizable(False, False)
 
-        # Colores
+        # Paleta de Colores Tigres UANL
         self.tigres_azul_oscuro = "#005DAB"
         self.tigres_azul_claro = "#003366" 
         self.tigres_amarillo_oscuro = "#FDB913"
@@ -105,16 +104,18 @@ class ProyectoFinalUI:
         self.rojo_salir_oscuro = "#eb4d4b"
         self.button_bg_color = "#1e272e" 
 
-        # Cargar Fondo
-        # IMPORTANTE: La carpeta 'src' debe estar junto al .exe
+        # Fondo
         ruta_base = obtener_ruta_base()
+        # Aseguramos que la ruta sea compatible con diferentes OS
         ruta_imagen = os.path.join(ruta_base, "src", "images", "Fondo Tigres.png") 
         self.load_background_with_overlay(ruta_imagen)
 
         # --- MAPA DE ARCHIVOS ---
+        # Nota: Todas las rutas son relativas a 'src/Python/'
         self.file_map = {
-            # === DOCUMENTACION ===
-            "Apunte de Introducción de Concurrencia": "Documentacion/Intro_Concurrencia.pdf",
+            # DOCUMENTACION (Se abrirán con visualPDF.py)
+            #"Apunte de Introducción de Concurrencia": "Documentacion/Intro_Concurrencia.pdf",
+            "Apunte de Introducción de Concurrencia": "Documentacion/AD.pdf",
             "Apunte de Hilos": "Documentacion/Apunte_Hilos.pdf",
             "Apunte de Sockets, TCP y UDP": "Documentacion/Apunte_Sockets.pdf",
             "Apunte de Semáforos": "Documentacion/Apunte_Semaforos.pdf",
@@ -127,13 +128,13 @@ class ProyectoFinalUI:
             "Apunte de Expectativas de la Materia": "Documentacion/Expectativas.pdf",
             "Documentación del Proyecto Final": "Documentacion/Proyecto_Final.pdf",
 
-            # === HILOS ===
+            # HILOS
             "Hilos_01": "Hilos/Hilos_01.py",
             "Hilos_02": "Hilos/Hilos_02.py",
             "Memorama con Hilos": "Hilos/Memorama/MemoramaHilos.py",
             "Ruleta de Mario Bros": "Hilos/Ruleta_Mario/RuletaMario.py",
 
-            # === SOCKETS ===
+            # SOCKETS
             "Mensajes con Servidor/Cliente": {"tipo": "dual", "carpeta": "Sockets/Mensajes_SC", "server": "servidor.py", "client": "cliente.py"},
             "Productos de limpieza": {"tipo": "dual", "carpeta": "Sockets/Productos_Limpieza", "server": "servidor.py", "client": "cliente.py"},
             "Programa TCP Algoritmos de Ordenamiento con Servidor/Cliente": {"tipo": "dual", "carpeta": "Sockets/TCP_Ordenamiento", "server": "servidor.py", "client": "cliente.py"},
@@ -143,7 +144,7 @@ class ProyectoFinalUI:
             "Programa de Comunicación Indirecta": "Sockets/Comunicacion_Indirecta/main.py",
             "Programa de Autentificación Servidor/Cliente Tigres": {"tipo": "dual", "carpeta": "Sockets/Auth_Tigres", "server": "servidor.py", "client": "cliente.py"},
 
-            # === SEMAFOROS ===
+            # SEMAFOROS
             "Semáforos con Sincronización": "Semaforos/Sincronizacion/main.py",
             "Semáforos con Servidor/Cliente": {"tipo": "dual", "carpeta": "Semaforos/Semaforos_SC", "server": "servidor.py", "client": "cliente.py"},
             "Programa de Condición de Carrera": "Semaforos/Condicion_Carrera/main.py",
@@ -152,7 +153,7 @@ class ProyectoFinalUI:
             "Programa de Sala de Chat (Por lo menos un servidor y 3 Clientes)": {"tipo": "dual", "carpeta": "Semaforos/Chat_1S3C", "server": "servidor.py", "client": "cliente.py"},
             "Programa de Sala de Chat (Con un equipo de Servidor/Cliente y otros dos equipos externos como clientes)": {"tipo": "dual", "carpeta": "Semaforos/Chat_Equipos", "server": "servidor.py", "client": "cliente.py"},
 
-            # === PATRONES ===
+            # PATRONES
             "Programa de Patrón Productor/Consumidor (fábrica de ensamblaje de Productos)": {"tipo": "dual", "carpeta": "Patrones/Productor_Consumidor", "server": "servidor.py", "client": "cliente.py"},
             "Programa de Patrón Futuro/Promesa _01": "Patrones/Futuro_Promesa_01/main.py",
             "Programa de Patrón Futuro/Promesa _02": "Patrones/Futuro_Promesa_02/main.py",
@@ -160,7 +161,7 @@ class ProyectoFinalUI:
             "Programa de Patrón Modelo de Actores Servidor/Cliente": {"tipo": "dual", "carpeta": "Patrones/Actores_SC", "server": "servidor.py", "client": "cliente.py"},
             "Programa de Patrón Reactor/Proactor": "Patrones/Reactor_Proactor/main.py",
 
-            # === AYUDA ===
+            # EXTRAS
             "Nombre de los alumnos": "CREDITOS",
             "Matricula de los Alumnos": "MATRICULAS"
         }
@@ -178,34 +179,38 @@ class ProyectoFinalUI:
     def load_background_with_overlay(self, image_path):
         try:
             if not os.path.exists(image_path):
-                # Fallback para desarrollo (si ejecutas desde 'src/Python/...' y la imagen está arriba)
-                # Intenta subir niveles si no encuentra la imagen directamente
-                pass 
+                print(f"Advertencia: No se encontró fondo en {image_path}")
 
             img = Image.open(image_path).convert("RGBA")
             img = img.resize((900, 700), Image.LANCZOS)
+            
+            # Crear overlay oscuro semitransparente
             overlay = Image.new("RGBA", img.size, (0, 0, 0, 0))
             draw = ImageDraw.Draw(overlay)
             center_x = img.width // 2
             ancho_panel = 700
+            # Rectángulo oscuro al centro
             draw.rectangle([(center_x - ancho_panel//2, 50), (center_x + ancho_panel//2, img.height - 50)], fill=(20, 20, 30, 180))
+            
             img = Image.alpha_composite(img, overlay)
             self.bg_photo = ImageTk.PhotoImage(img)
+            
             self.main_canvas = tk.Canvas(self.root, width=900, height=700, highlightthickness=0)
             self.main_canvas.pack(fill="both", expand=True)
             self.main_canvas.create_image(0, 0, image=self.bg_photo, anchor="nw")
         except Exception as e:
-            # messagebox.showerror("Error", f"Fondo no encontrado: {image_path}\n{e}")
+            # Fallback si falla la imagen (pantalla gris oscura elegante)
             self.root.configure(bg="#1e272e")
             self.main_canvas = tk.Canvas(self.root, width=900, height=700, bg="#1e272e", highlightthickness=0)
             self.main_canvas.pack()
 
     def crear_interfaz(self):
+        # Títulos
         self.main_canvas.create_text(453, 63, text="Programación Concurrente", font=("Segoe UI", 28, "bold"), fill="black")
         self.main_canvas.create_text(450, 60, text="Programación Concurrente", font=("Segoe UI", 28, "bold"), fill="white")
         self.main_canvas.create_text(450, 110, text="Menú Principal del Proyecto", font=("Segoe UI", 14), fill="#dfe6e9")
 
-        # Botones Principales (Ubicaciones Originales)
+        # Botones Principales (Izquierda)
         btn_a = BotonModerno(self.main_canvas, "A.- Documentación", lambda: self.abrir_submenu("A.- Documentación"), self.tigres_azul_oscuro, self.tigres_azul_claro, self.tigres_amarillo_oscuro, bg_color=self.button_bg_color)
         btn_a.place(x=160, y=300)
         btn_c = BotonModerno(self.main_canvas, "C.- Menú de Sockets", lambda: self.abrir_submenu("C.- Menu de Sockets"), self.tigres_azul_oscuro, self.tigres_azul_claro, self.tigres_amarillo_oscuro, bg_color=self.button_bg_color)
@@ -213,6 +218,7 @@ class ProyectoFinalUI:
         btn_e = BotonModerno(self.main_canvas, "E.- Menú de Patrones", lambda: self.abrir_submenu("E.- Menu de Patrones"), self.tigres_azul_oscuro, self.tigres_azul_claro, self.tigres_amarillo_oscuro, bg_color=self.button_bg_color)
         btn_e.place(x=160, y=460)
 
+        # Botones Principales (Derecha)
         btn_b = BotonModerno(self.main_canvas, "B.- Menú de Hilos", lambda: self.abrir_submenu("B.- Menu de Hilos"), self.tigres_amarillo_oscuro, self.tigres_amarillo_claro, self.tigres_azul_oscuro, bg_color=self.button_bg_color)
         btn_b.place(x=480, y=300)
         btn_d = BotonModerno(self.main_canvas, "D.- Menú de Semáforos", lambda: self.abrir_submenu("D.- Menu de Semáforos"), self.tigres_amarillo_oscuro, self.tigres_amarillo_claro, self.tigres_azul_oscuro, bg_color=self.button_bg_color)
@@ -220,6 +226,7 @@ class ProyectoFinalUI:
         btn_f = BotonModerno(self.main_canvas, "F.- Menú de Ayuda", lambda: self.abrir_submenu("F.- Menu de Ayuda"), self.tigres_amarillo_oscuro, self.tigres_amarillo_claro, self.tigres_azul_oscuro, bg_color=self.button_bg_color)
         btn_f.place(x=480, y=460)
 
+        # Botón Salir
         btn_g = BotonModerno(self.main_canvas, "G.- Salir", self.root.quit, self.rojo_salir_claro, self.rojo_salir_oscuro, self.tigres_azul_oscuro, width=300, bg_color=self.button_bg_color)
         btn_g.place(x=300, y=550)
 
@@ -232,36 +239,19 @@ class ProyectoFinalUI:
         sub.transient(self.root)
         sub.grab_set()
 
-        # Fondo Submenú
-        ruta_base = obtener_ruta_base()
-        ruta_imagen = os.path.join(ruta_base, "src", "images", "Fondo Tigres.png")
-        
-        bg_canvas = None
-        try:
-            img = Image.open(ruta_imagen).convert("RGBA")
-            img = img.resize((650, 650), Image.LANCZOS)
-            overlay = Image.new("RGBA", img.size, (0, 0, 0, 0))
-            draw = ImageDraw.Draw(overlay)
-            center_x = img.width // 2
-            ancho_panel = 580
-            draw.rectangle([(center_x - ancho_panel//2, 50), (center_x + ancho_panel//2, img.height - 50)], fill=(20, 20, 30, 180))
-            img = Image.alpha_composite(img, overlay)
-            sub.bg_photo = ImageTk.PhotoImage(img)
+        # Reutilizamos fondo en submenú
+        bg_canvas = tk.Canvas(sub, width=650, height=650, bg="#2d3436", highlightthickness=0)
+        bg_canvas.pack(fill="both", expand=True)
 
-            bg_canvas = tk.Canvas(sub, width=650, height=650, highlightthickness=0)
-            bg_canvas.pack(fill="both", expand=True)
-            bg_canvas.create_image(0, 0, image=sub.bg_photo, anchor="nw")
-        except:
-            bg_canvas = tk.Canvas(sub, width=650, height=650, bg="#2d3436", highlightthickness=0)
-            bg_canvas.pack(fill="both", expand=True)
-
+        # Título Submenú
         bg_canvas.create_text(328, 63, text=key_seccion, font=("Segoe UI", 16, "bold"), fill="black")
         bg_canvas.create_text(325, 60, text=key_seccion, font=("Segoe UI", 16, "bold"), fill=self.tigres_amarillo_oscuro)
 
-        # Panel Central con Scroll
+        # Frame contenedor para Scroll
         panel_frame = tk.Frame(bg_canvas, bg="#2d3436")
         bg_canvas.create_window(325, 360, window=panel_frame, width=600, height=460)
 
+        # Scrollbar logic
         canvas = tk.Canvas(panel_frame, bg="#2d3436", highlightthickness=0)
         scrollbar = ttk.Scrollbar(panel_frame, orient="vertical", command=canvas.yview)
         scroll_frame = tk.Frame(canvas, bg="#2d3436")
@@ -272,7 +262,9 @@ class ProyectoFinalUI:
         canvas.pack(side="left", fill="both", expand=True, padx=5, pady=5)
         scrollbar.pack(side="right", fill="y")
 
+        # Generar botones del submenú
         for i, item in enumerate(items):
+            # Alternar colores
             if i % 2 == 0:
                 fill_s, fill_e, border = self.tigres_azul_oscuro, self.tigres_azul_claro, self.tigres_amarillo_oscuro
             else:
@@ -282,17 +274,19 @@ class ProyectoFinalUI:
                                fill_s, fill_e, border, width=580, height=45, corner_radius=10, bg_color="#2d3436")
             btn.pack(pady=5)
 
+        # Botón Regresar
         btn_close = BotonModerno(bg_canvas, "Regresar", sub.destroy,
                                  self.tigres_azul_oscuro, self.tigres_azul_claro, self.tigres_amarillo_oscuro,
                                  width=150, height=40, corner_radius=15, bg_color="#2d3436")
         bg_canvas.create_window(325, 620, window=btn_close)
 
     def ejecutar_programa(self, nombre_programa):
+        # Lógica de créditos
         if nombre_programa == "Nombre de los alumnos":
             messagebox.showinfo("Equipo", "Integrantes:\n- Sanchez Mendoza Octavio\n- Hernández Alarcón Kimberly Anette \n-Carpio Callejas Diana Ximena\n- Hernández Cruz Julio Hazel \n-Jiménez Ángeles Victor Jesús \n-Calderón López Mario Daniel")
             return
         if nombre_programa == "Matricula de los Alumnos":
-            messagebox.showinfo("Matrículas", "- 2209003 \n - 2321123265 \n - 2331123258 \n - 2331123268") 
+            messagebox.showinfo("Matrículas", " - 2209003 \n - 2321123265 \n - 2331123258 \n - 2331123268 \n - 2231123631 \n - 2331123264") 
             return
         
         config = self.file_map.get(nombre_programa)
@@ -300,7 +294,7 @@ class ProyectoFinalUI:
             messagebox.showwarning("Aviso", f"No hay archivo asignado para: {nombre_programa}")
             return
 
-        # IMPORTANTE: Construir ruta absoluta
+        # Construcción robusta de rutas absolutas
         ruta_base = obtener_ruta_base()
         
         if isinstance(config, dict) and config.get("tipo") == "dual":
@@ -308,7 +302,9 @@ class ProyectoFinalUI:
             Executer.lanzar_dual(ruta_carpeta, config["server"], config["client"])
 
         elif isinstance(config, str):
+            # Aquí es donde ocurre la magia para los PDFs
             ruta_archivo = os.path.join(ruta_base, "src", "Python", config)
+            # Llamamos a lanzar_simple, el cual ahora sabe detectar si es PDF y llamar al visualPDF.py
             Executer.lanzar_simple(ruta_archivo)
 
 if __name__ == "__main__":
